@@ -2,7 +2,7 @@
 /vendor/
 
 # Ignore Composer lock file if you want (optional)
-/composer.lock
+composer.lock
 
 # Ignore node modules if you have any frontend build (optional)
 /node_modules/
