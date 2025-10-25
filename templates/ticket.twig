@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ticket Management | Ticketly</title>
+  <link rel="stylesheet" href="/twigversion/assets/css/ticket.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div id="ticket">
+    <div id="container">
+      <aside>
+        <h1>Ticketly</h1>
+        <div>
+          <nav>
+            <h4 id="navDashboard">Dashboard</h4>
+            <h4 id="navCreate">Create Ticket</h4>
+            <h4 id="navList">Tickets Lists</h4>
+          </nav>
+          <h4 id="logoutBtn">Logout</h4>
+        </div>
+      </aside>
+
+      <main>
+        <div>
+          <h1>TICKETS</h1>
+          <h2>Welcome, <span id="username">User</span></h2>
+        </div>
+
+        <form id="ticketForm">
+          <legend id="formLegend">Create Ticket</legend>
+
+          <nav>
+            <label>Title</label>
+            <input type="text" id="title" placeholder="Enter ticket title" required>
+          </nav>
+
+          <nav>
+            <label>Description</label>
+            <input type="text" id="description" placeholder="Describe the issue or request">
+          </nav>
+
+          <nav>
+            <label>Status</label>
+            <select id="status" required>
+              <option value="">Select status</option>
+              <option value="open">Open</option>
+              <option value="in_progress">In Progress</option>
+              <option value="closed">Closed</option>
+            </select>
+          </nav>
+
+          <nav>
+            <button type="submit" id="submitBtn">Submit</button>
+          </nav>
+
+          <p id="message" style="color: green; margin-top: 10px;"></p>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    let editingIndex = null;
+    let tickets = [];
+    let user = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const session = localStorage.getItem("ticketapp_session");
+      const storedUser = JSON.parse(localStorage.getItem("ticketapp_user"));
+
+      if (!session || !storedUser) {
+        alert("Please login first!");
+        window.location.href = "/twigversion/login.php";
+        return;
+      }
+
+      user = storedUser;
+      document.getElementById("username").textContent = user.username;
+
+      tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+      renderTickets();
+    });
+
+    document.getElementById("ticketForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const status = document.getElementById("status").value;
+
+      if (!title || !status) {
+        showMessage("Title and status are required.", "red");
+        return;
+      }
+
+      const newTicket = {
+        title,
+        description,
+        status,
+        createdBy: user.username,
+        id: editingIndex !== null ? tickets[editingIndex].id : Date.now(),
+      };
+
+      if (editingIndex !== null) {
+        tickets[editingIndex] = newTicket;
+        showMessage("Ticket updated successfully!", "green");
+        editingIndex = null;
+        document.getElementById("formLegend").textContent = "Create Ticket";
+        document.getElementById("submitBtn").textContent = "Submit";
+      } else {
+        tickets.push(newTicket);
+        showMessage("Ticket created successfully!", "green");
+      }
+
+      localStorage.setItem("tickets", JSON.stringify(tickets));
+      renderTickets();
+      document.getElementById("ticketForm").reset();
+    });
+
+    function renderTickets() {
+      const list = document.getElementById("ticketList");
+      list.innerHTML = "";
+
+      if (tickets.length === 0) {
+        list.innerHTML = "<p>No tickets available.</p>";
+        return;
+      }
+
+      tickets.forEach((ticket, index) => {
+        const card = document.createElement("div");
+        card.className = "ticket-card";
+
+        card.innerHTML = `
+          <h4>${ticket.title}</h4>
+          <p>${ticket.description || "No description"}</p>
+          <p><b>Status:</b> ${ticket.status}</p>
+          <p><b>Created by:</b> ${ticket.createdBy}</p>
+          <div class="actions">
+            <button onclick="editTicket(${index})">Edit</button>
+            <button onclick="deleteTicket(${index})">Delete</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function editTicket(index) {
+      const ticket = tickets[index];
+      document.getElementById("title").value = ticket.title;
+      document.getElementById("description").value = ticket.description;
+      document.getElementById("status").value = ticket.status;
+
+      editingIndex = index;
+      document.getElementById("formLegend").textContent = "Edit Ticket";
+      document.getElementById("submitBtn").textContent = "Update Ticket";
+    }
+
+    function deleteTicket(index) {
+      if (confirm("Are you sure you want to delete this ticket?")) {
+        tickets.splice(index, 1);
+        localStorage.setItem("tickets", JSON.stringify(tickets));
+        renderTickets();
+        showMessage("Ticket deleted successfully!", "green");
+      }
+    }
+
+    function showMessage(text, color) {
+      const msg = document.getElementById("message");
+      msg.textContent = text;
+      msg.style.color = color;
+      setTimeout(() => msg.textContent = "", 3000);
+    }
+
+    document.getElementById("navDashboard").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/dashboard.twig";
+    });
+    document.getElementById("navCreate").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/ticket.twig";
+    });
+    document.getElementById("navList").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/ticketlist.twig";
+    });
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("ticketapp_session");
+      alert("You have been logged out.");
+      window.location.href = "/twigversion/templates/login.twig";
+    });
+  </script>
+</body>
+</html>

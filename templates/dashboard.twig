@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Ticketly</title>
+  <link rel="stylesheet" href="/twigversion/assets/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div id="dashboard">
+
+    <div id="container">
+      <aside>
+        <h1>Ticketly</h1>
+        <div>
+          <nav>
+            <h4 id="navDashboard">Dashboard</h4>
+            <h4 id="navCreate">Create Ticket</h4>
+            <h4 id="navList">Tickets Lists</h4>
+          </nav>
+          <h4 id="logoutBtn">Logout</h4>
+        </div>
+      </aside>
+
+      <main>
+        <div>
+          <h1>DASHBOARD</h1>
+          <h2>Welcome, <span id="username">User</span></h2>
+        </div>
+
+        <section>
+          <article>
+            <i class="fa-solid fa-ticket"></i>
+            <h4>Total Tickets</h4>
+            <p id="totalTickets">0</p>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-folder-open"></i>
+            <h4>Open Tickets</h4>
+            <p id="openTickets">0</p>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-check-circle"></i>
+            <h4>Resolved Tickets</h4>
+            <p id="resolvedTickets">0</p>
+          </article>
+
+          <article id="goTicket" class="btn-link">
+            Go to Ticket Management
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const session = localStorage.getItem("ticketapp_session");
+      const storedUser = JSON.parse(localStorage.getItem("ticketapp_user"));
+
+      if (!session || !storedUser) {
+        alert("Please login first!");
+        window.location.href = "/twigversion/login.php";
+        return;
+      }
+
+      document.getElementById("username").textContent = storedUser.username;
+
+      const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
+      const openTickets = storedTickets.filter(t => t.status === "open").length;
+      const resolvedTickets = storedTickets.filter(t => t.status === "closed").length;
+
+      document.getElementById("totalTickets").textContent = storedTickets.length;
+      document.getElementById("openTickets").textContent = openTickets;
+      document.getElementById("resolvedTickets").textContent = resolvedTickets;
+    });
+
+    document.getElementById("navDashboard").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/dashboard.twig";
+    });
+
+    document.getElementById("navCreate").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/ticket.twig";
+    });
+
+    document.getElementById("navList").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/ticketlist.twig";
+    });
+
+    document.getElementById("goTicket").addEventListener("click", () => {
+      window.location.href = "/twigversion/templates/ticket.twig";
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("ticketapp_session");
+      alert("You have been logged out.");
+      window.location.href = "/twigversion/templates/login.twig";
+    });
+  </script>
+</body>
+</html>

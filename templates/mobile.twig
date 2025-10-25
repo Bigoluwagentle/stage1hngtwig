@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tickets List | Ticketly</title>
+  <link rel="stylesheet" href="/twigversion/assets/css/TicketList.css">
+  <link rel="stylesheet" href="/twigversion/assets/css/mobile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div id="mobile">
+    <i class="fa-solid fa-bars" id="mobileMenuBtn"></i>
+    <section id="mobileMenu" style="display: none;">
+      <aside>
+        <div>
+          <nav>
+            <i class="fa-solid fa-xmark" id="mobileCloseBtn"></i>
+            <h4 id="navDashboardMobile">Dashboard</h4>
+            <h4 id="navCreateMobile">Create Ticket</h4>
+            <h4 id="navListMobile">Tickets Lists</h4>
+          </nav>
+          <h4 id="logoutMobile">Logout</h4>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <div id="ticketlist">
+    <div id="container">
+      <aside>
+        <h1>Ticketly</h1>
+        <div>
+          <nav>
+            <h4 id="navDashboard">Dashboard</h4>
+            <h4 id="navCreate">Create Ticket</h4>
+            <h4 id="navList">Tickets Lists</h4>
+          </nav>
+          <h4 id="logoutBtn">Logout</h4>
+        </div>
+      </aside>
+
+      <main>
+        <div>
+          <h1>TICKETS LISTS</h1>
+          <h2>Welcome, <span id="username">User</span></h2>
+        </div>
+
+        <section id="ticketsSection">
+          <!-- Tickets will be dynamically rendered here -->
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const session = localStorage.getItem("ticketapp_session");
+      const storedUser = JSON.parse(localStorage.getItem("ticketapp_user"));
+      const ticketsSection = document.getElementById("ticketsSection");
+
+      if (!session || !storedUser) {
+        alert("Please login first!");
+        window.location.href = "/twigversion/templates/login.twig";
+        return;
+      }
+
+      document.getElementById("username").textContent = storedUser.username;
+
+      const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
+      if (storedTickets.length === 0) {
+        ticketsSection.innerHTML = "<p>No tickets created yet.</p>";
+      } else {
+        storedTickets.forEach(ticket => {
+          const ticketCard = document.createElement("div");
+          ticketCard.classList.add("ticket-card");
+
+          ticketCard.innerHTML = `
+            <nav>
+              <h4>${ticket.title}</h4>
+              <p>${ticket.description}</p>
+              <p>Status: ${ticket.status}</p>
+              <nav>
+                <li class="editTicket" data-id="${ticket.id}">Edit</li>
+                <li class="deleteTicket" data-id="${ticket.id}">Delete</li>
+              </nav>
+            </nav>
+          `;
+
+          ticketsSection.appendChild(ticketCard);
+        });
+      }
+
+      const navigateTo = (url) => window.location.href = url;
+      document.getElementById("navDashboard").addEventListener("click", () => navigateTo("/twigversion/templates/dashboard.twig"));
+      document.getElementById("navCreate").addEventListener("click", () => navigateTo("/twigversion/templates/ticket.twig"));
+      document.getElementById("navList").addEventListener("click", () => navigateTo("/twigversion/templates/ticketlist.twig"));
+
+      document.getElementById("navDashboardMobile").addEventListener("click", () => navigateTo("/twigversion/templates/dashboard.twig"));
+      document.getElementById("navCreateMobile").addEventListener("click", () => navigateTo("/twigversion/templates/ticket.twig"));
+      document.getElementById("navListMobile").addEventListener("click", () => navigateTo("/twigversion/templates/ticketlist.twig"));
+
+      const logout = () => {
+        localStorage.removeItem("ticketapp_session");
+        alert("You have been logged out.");
+        navigateTo("/twigversion/templates/login.twig");
+      };
+      document.getElementById("logoutBtn").addEventListener("click", logout);
+      document.getElementById("logoutMobile").addEventListener("click", logout);
+
+      const mobileMenu = document.getElementById("mobileMenu");
+      document.getElementById("mobileMenuBtn").addEventListener("click", () => mobileMenu.style.display = "block");
+      document.getElementById("mobileCloseBtn").addEventListener("click", () => mobileMenu.style.display = "none");
+
+      ticketsSection.addEventListener("click", (e) => {
+        if (e.target.classList.contains("deleteTicket")) {
+          const id = e.target.dataset.id;
+          if (confirm("Are you sure you want to delete this ticket?")) {
+            const updatedTickets = storedTickets.filter(t => t.id != id);
+            localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+            e.target.closest(".ticket-card").remove();
+            alert("Ticket deleted successfully!");
+          }
+        }
+        if (e.target.classList.contains("editTicket")) {
+          const id = e.target.dataset.id;
+          navigateTo(`/twigversion/templates/ticket_edit.twig?id=${id}`);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

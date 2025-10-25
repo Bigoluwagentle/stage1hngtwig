@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Ticketly</title>
+  <link rel="stylesheet" href="/twigversion/assets/css/login.css">
+</head>
+<body>
+  <div id="login">
+    <h1>Ticketly</h1>
+    <p>Welcome Back!</p>
+
+    <form id="loginForm">
+      <nav>
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter Your Email" required>
+      </nav>
+
+      <nav>
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your Password" required>
+      </nav>
+
+      <p id="error" style="color:red; display:none;"></p>
+
+      <nav>
+        <button type="submit">Login</button>
+      </nav>
+      <nav>
+        <p>
+          Don't have an account?
+          <b id="goSignup" style="cursor:pointer; color:#2563EB;">Signup</b>
+        </p>
+      </nav>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorEl = document.getElementById('error');
+    const goSignup = document.getElementById('goSignup');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const storedUser = JSON.parse(localStorage.getItem('ticketapp_user'));
+
+      if (!storedUser) {
+        errorEl.textContent = 'No account found. Please signup first.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      if (storedUser.email === email && storedUser.password === password) {
+        localStorage.setItem('ticketapp_session', 'active');
+        alert('Login successful!');
+        window.location.href = '/twigversion/templates/dashboard.twig';
+      } else {
+        errorEl.textContent = 'Invalid email or password.';
+        errorEl.style.display = 'block';
+      }
+    });
+
+    goSignup.addEventListener('click', () => {
+      window.location.href = '/twigversion/templates/signup.twig';
+    });
+  </script>
+</body>
+</html>
