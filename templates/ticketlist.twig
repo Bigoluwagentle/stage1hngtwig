@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Tickets List | Ticketly</title>
-  <link rel="stylesheet" href="/twigversion/assets/css/TicketList.css">
+  <link rel="stylesheet" href="/assets/css/TicketList.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -41,7 +41,7 @@
 
       if (!session || !storedUser) {
         alert("Please login first!");
-        window.location.href = "/twigversion/templates/login.twig";
+        window.location.href = "/templates/login.twig";
         return;
       }
 
@@ -73,19 +73,19 @@
       }
 
       document.getElementById("navDashboard").addEventListener("click", () => {
-        window.location.href = "/twigversion/templates/dashboard.twig";
+        window.location.href = "/templates/dashboard.twig";
       });
       document.getElementById("navCreate").addEventListener("click", () => {
-        window.location.href = "/twigversion/templates/ticket.twig";
+        window.location.href = "/templates/ticket.twig";
       });
       document.getElementById("navList").addEventListener("click", () => {
-        window.location.href = "/twigversion/templates/ticketlist.twig";
+        window.location.href = "/templates/ticketlist.twig";
       });
 
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("ticketapp_session");
         alert("You have been logged out.");
-        window.location.href = "/twigversion/templates/login.twig";
+        window.location.href = "/templates/login.twig";
       });
 
       ticketsSection.addEventListener("click", (e) => {
@@ -101,7 +101,7 @@
 
         if (e.target.classList.contains("editTicket")) {
           const id = e.target.dataset.id;
-          window.location.href = `/twigversion/templates/ticket_edit.twig?id=${id}`;
+          window.location.href = `/templates/ticket_edit.twig?id=${id}`;
         }
       });
     });

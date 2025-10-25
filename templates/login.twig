@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login | Ticketly</title>
-  <link rel="stylesheet" href="/twigversion/assets/css/login.css">
+  <link rel="stylesheet" href="/assets/css/login.css">
 </head>
 <body>
   <div id="login">
@@ -56,7 +56,7 @@
       if (storedUser.email === email && storedUser.password === password) {
         localStorage.setItem('ticketapp_session', 'active');
         alert('Login successful!');
-        window.location.href = '/twigversion/templates/dashboard.twig';
+        window.location.href = '/templates/dashboard.twig';
       } else {
         errorEl.textContent = 'Invalid email or password.';
         errorEl.style.display = 'block';
@@ -64,7 +64,7 @@
     });
 
     goSignup.addEventListener('click', () => {
-      window.location.href = '/twigversion/templates/signup.twig';
+      window.location.href = '/templates/signup.twig';
     });
   </script>
 </body>

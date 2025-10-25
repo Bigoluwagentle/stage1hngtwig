@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Signup | Ticketly</title>
-  <link rel="stylesheet" href="/twigversion/assets/css/login.css">
+  <link rel="stylesheet" href="/assets/css/login.css">
 </head>
 <body>
   <div id="login">
@@ -90,11 +90,11 @@
       localStorage.setItem("ticketapp_session", "active");
 
       alert("Signup successful!");
-      window.location.href = "/twigversion/templates/dashboard.twig";
+      window.location.href = "/templates/dashboard.twig";
     });
 
     goLogin.addEventListener('click', () => {
-      window.location.href = "/twigversion/templates/login.twig";
+      window.location.href = "/templates/login.twig";
     });
   </script>
 </body>
