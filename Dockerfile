@@ -4,19 +4,23 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
+# Install required PHP extensions and utilities for Composer
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql zip \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy project files (do NOT copy local vendor)
 COPY . /var/www/html
-
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
 
 # Install Composer inside container
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Run composer install inside container to get all dependencies fresh
+# Run composer install inside container
 RUN composer install --no-dev --optimize-autoloader
 
 # Expose port for Render
