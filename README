@@ -1,0 +1,27 @@
+
+---
+
+## **3. Ticketly (Twig/PHP Version)**
+
+```markdown
+# Ticketly (Twig/PHP Version)
+
+Ticketly is a PHP-based ticket management web application using Twig templating. Users can create, edit, and delete tickets while tracking their statuses. The project focuses on server-side rendering with a clean and responsive design.
+
+## Features
+- User authentication and session management
+- Create, edit, and delete tickets
+- Dashboard for ticket statistics (total, open, closed)
+- Responsive design for desktop and mobile
+- Server-side rendering using Twig templates
+
+## Technologies Used
+- PHP 8.x
+- Twig templating engine
+- CSS3 and JavaScript for interactivity
+- Composer for dependency management
+
+## Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ticketly.git
