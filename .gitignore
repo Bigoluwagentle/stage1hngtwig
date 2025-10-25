@@ -1,0 +1,23 @@
+# Ignore Composer vendor directory
+/vendor/
+
+# Ignore Composer lock file if you want (optional)
+/composer.lock
+
+# Ignore node modules if you have any frontend build (optional)
+/node_modules/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor configs
+.vscode/
+.idea/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.swp
